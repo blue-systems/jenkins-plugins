@@ -60,4 +60,21 @@ end
 CLEAN << 'kde-oauth-plugin'
 CLOBBER << 'kde-oauth-plugin.hpi'
 
-task :default => %w(bazaar.hpi kde-oauth-plugin.hpi)
+task 'dependency-queue-plugin.hpi' do |t|
+  dir = File.basename(t.name, '.hpi')
+  unless File.exist?(dir)
+    sh "git clone https://github.com/jenkinsci/dependency-queue-plugin #{dir}"
+  end
+  Dir.chdir(dir) do
+    sh 'git reset --hard'
+    sh 'git clean -fd'
+    sh 'git pull'
+    sh 'mvn clean install -DskipTests=true -U'
+    sh 'tree target/'
+    FileUtils.cp("target/#{t.name}", __dir__)
+  end
+end
+CLEAN << 'dependency-queue-plugin'
+CLOBBER << 'dependency-queue-plugin.hpi'
+
+task :default => %w(bazaar.hpi kde-oauth-plugin.hpi dependency-queue-plugin.hpi)
