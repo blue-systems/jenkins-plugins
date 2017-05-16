@@ -57,5 +57,7 @@ task 'kde-oauth-plugin.hpi' do |t|
     FileUtils.cp('target/kde-oauth-plugin.hpi', __dir__)
   end
 end
+CLEAN << 'kde-oauth-plugin'
+CLOBBER << 'kde-oauth-plugin.hpi'
 
 task :default => %w(bazaar.hpi kde-oauth-plugin.hpi)
